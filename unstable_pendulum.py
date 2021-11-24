@@ -132,16 +132,12 @@ def angle_normalize(x):
 
 if __name__ == "__main__":
     env = UnstablePendulumEnv(wind_type="random", max_wind=1.0)
-    env = gym.wrappers.Monitor(env, '/tmp/mppi/', force=True)
+    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym', force=True)
     import time
 
-    # env is created, now we can use it:
-    for episode in range(1):
-        obs = env.reset()
-        for step in range(500):
-            # or given a custom model, action = policy(observation)
-            action = env.action_space.sample()
-            nobs, reward, done, info = env.step(action)
-            env.render()
-            #time.sleep(0.05)
+    obs = env.reset()
+    for step in range(500):
+        action = env.action_space.sample()
+        nobs, reward, done, info = env.step(action)
+        env.render()
             
