@@ -1,4 +1,4 @@
-# Gym-Like Benchmark for Robustness Tests of Control Alrogithms
+# Benchmark for Robustness Tests of Control Alrogithms
 
 This repository contains classical control benchmarks for evaluating robustnesses of control and reinforcement learning algorithms. It can be used as zero-shot control performence evaluations. It is built upon OpenAI Gym.
 
