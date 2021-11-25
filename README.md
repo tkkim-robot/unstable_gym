@@ -45,7 +45,7 @@ There are two options for "wind type":
 1.  **"sine"** : sine wave side wind
 2.  **"random"** : random side wind
 
-You can also adjust the magnitude of the side wind (in [N]): "max_wind"
+You can also adjust the magnitude of the side wind (in [N]): "max_wind" .
 
 # Related Works
 
