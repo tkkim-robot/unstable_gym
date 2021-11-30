@@ -46,7 +46,7 @@ class UnstablePendulumEnv(gym.Env):
         elif self.wind_type == "sine":
             w = self.max_w*np.sin(t)
         else:
-            raise NotImplementedError("Not Impleneted Wind Type !!")
+            raise NotImplementedError("Not Implemented Wind Type !!")
         return w
 
     def step(self, u):
