@@ -63,7 +63,7 @@ class UnstablePendulumEnv(gym.Env):
 
         self.last_u = u  # for rendering
         self.last_w = w  # for rendering
-        print(w)
+
         costs = angle_normalize(th) ** 2 + 0.1 * thdot ** 2 + 0.001 * (u ** 2)
 
         final_torque = u + w*l**2*np.cos(th)/2
@@ -114,8 +114,8 @@ class UnstablePendulumEnv(gym.Env):
         self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
         if self.last_u is not None:
             self.imgtrans.scale = (-self.last_u / 2, np.abs(self.last_u) / 2)
-            self.wind_imgtrans.scale = (-self.last_w , np.abs(self.last_w) )
-            wind_x = 1.5 if self.last_w > 0 else -1.5
+            self.wind_imgtrans.scale = (self.last_w , np.abs(self.last_w) )
+            wind_x = 1.5 if self.last_w < 0 else -1.5
             self.wind_imgtrans.set_translation(wind_x, 0.0)
 
         return self.viewer.render(return_rgb_array=mode == "rgb_array")
@@ -132,7 +132,7 @@ def angle_normalize(x):
 
 if __name__ == "__main__":
     env = UnstablePendulumEnv(wind_type="random", max_wind=1.0)
-    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym', force=True)
+    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
     import time
 
     obs = env.reset()

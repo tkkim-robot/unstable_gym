@@ -89,7 +89,6 @@ class Unstable_ContinuousCartPoleEnv(gym.Env):
 
         w = self.update_wind(self.t)
         self.last_w = w
-        print(w)
         wind_torque = 2.0 * w * self.length * costheta / self.masspole
 
         # For the interested reader:
@@ -139,7 +138,7 @@ class Unstable_ContinuousCartPoleEnv(gym.Env):
         self.state = self.np_random.uniform(low=-0.05, high=0.05, size=(4,))
         self.state[2] += np.pi
         self.steps_beyond_done = None
-        self.last_w = None
+        self.last_w = 0.
         self.t = self.np_random.uniform(low=0.0, high=2*math.pi)
         return np.array(self.state, dtype=np.float32)
 
@@ -213,8 +212,8 @@ class Unstable_ContinuousCartPoleEnv(gym.Env):
         self.carttrans.set_translation(cartx, carty)
         self.poletrans.set_rotation(-x[2])
 
-        self.wind_imgtrans.scale = (-self.last_w, np.abs(self.last_w) )
-        wind_x = 550 if self.last_w > 0 else 50
+        self.wind_imgtrans.scale = (self.last_w, np.abs(self.last_w) )
+        wind_x = 550 if self.last_w < 0 else 50
         self.wind_imgtrans.set_translation(wind_x, 200)
 
         return self.viewer.render(return_rgb_array=mode == "rgb_array")
@@ -226,12 +225,12 @@ class Unstable_ContinuousCartPoleEnv(gym.Env):
 
 if __name__ == "__main__":
     env = Unstable_ContinuousCartPoleEnv(wind_type="random", max_wind=1.0)
-    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym', force=True)
+    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
     import time
 
     for ep in range(10):
         obs = env.reset()
-        for step in range(500):
+        for step in range(1000):
             action = env.action_space.sample()
             nobs, reward, done, info = env.step(action)
             env.render()
