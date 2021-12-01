@@ -114,8 +114,8 @@ class UnstablePendulumEnv(gym.Env):
         self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
         if self.last_u is not None:
             self.imgtrans.scale = (-self.last_u / 2, np.abs(self.last_u) / 2)
-            self.wind_imgtrans.scale = (self.last_w , np.abs(self.last_w) )
-            wind_x = 1.5 if self.last_w < 0 else -1.5
+            self.wind_imgtrans.scale = (-self.last_w , np.abs(self.last_w) )
+            wind_x = 1.5 if self.last_w > 0 else -1.5
             self.wind_imgtrans.set_translation(wind_x, 0.0)
 
         return self.viewer.render(return_rgb_array=mode == "rgb_array")
