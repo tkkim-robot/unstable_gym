@@ -21,7 +21,7 @@ python unstable_pendulum.py
 ```
 For cartpole(continuous action),
 ```bash
-python unstable_continuouscartpole.py
+python unstable_cartpole_cont.py
 ```
 
 It's an inverted pendulum in gym environment. The sample results of the two different winds are shown below:
@@ -53,8 +53,8 @@ for step in range(500):
 For [cartpole](https://github.com/ktk1501/unstable_gym/blob/master/unstable_continuouscartpole.py):
 
 ```python
-from unstable_gym.unstable_continuouscartpole import Unstable_ContinuousCartPoleEnv
-env = Unstable_ContinuousCartPoleEnv(wind_type="sine", max_wind=1.0)
+from unstable_gym.unstable_cartpole_cont import UnstableCartPoleContEnv
+env = UnstableCartPoleContEnv(wind_type="sine", max_wind=1.0)
 
 for ep in range(10):
     obs = env.reset()
