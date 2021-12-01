@@ -46,7 +46,7 @@ class UnstablePendulumEnv(gym.Env):
         elif self.wind_type == "sine":
             w = self.max_w*np.sin(t)
         else:
-            raise NotImplementedError("Not Impleneted Wind Type !!")
+            raise NotImplementedError("Not Implemented Wind Type !!")
         return w
 
     def step(self, u):
@@ -63,7 +63,7 @@ class UnstablePendulumEnv(gym.Env):
 
         self.last_u = u  # for rendering
         self.last_w = w  # for rendering
-        print(w)
+
         costs = angle_normalize(th) ** 2 + 0.1 * thdot ** 2 + 0.001 * (u ** 2)
 
         final_torque = u + w*l**2*np.cos(th)/2
@@ -132,7 +132,7 @@ def angle_normalize(x):
 
 if __name__ == "__main__":
     env = UnstablePendulumEnv(wind_type="random", max_wind=1.0)
-    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym', force=True)
+    #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
     import time
 
     obs = env.reset()
