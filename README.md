@@ -50,7 +50,7 @@ for step in range(500):
     nobs, reward, done, info = env.step(action)
     env.render()
 ```
-For [cartpole](https://github.com/ktk1501/unstable_gym/blob/master/unstable_continuouscartpole.py):
+For [cartpole](https://github.com/ktk1501/unstable_gym/blob/master/unstable_cartpole_cont.py):
 
 ```python
 from unstable_gym.unstable_cartpole_cont import UnstableCartPoleContEnv
