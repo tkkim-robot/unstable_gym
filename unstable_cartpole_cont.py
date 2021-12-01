@@ -11,7 +11,7 @@ from gym.utils import seeding
 import numpy as np
 from os import path
 
-class Unstable_ContinuousCartPoleEnv(gym.Env):
+class UnstableCartPoleContEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 50}
 
@@ -224,7 +224,7 @@ class Unstable_ContinuousCartPoleEnv(gym.Env):
             self.viewer = None
 
 if __name__ == "__main__":
-    env = Unstable_ContinuousCartPoleEnv(wind_type="random", max_wind=1.0)
+    env = UnstableCartPoleContEnv(wind_type="random", max_wind=1.0)
     #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
     import time
 
