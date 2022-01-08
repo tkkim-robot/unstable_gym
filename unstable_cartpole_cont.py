@@ -11,9 +11,11 @@ from gym.utils import seeding
 import numpy as np
 from os import path
 
+
 class UnstableCartPoleContEnv(gym.Env):
 
-    metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 50}
+    metadata = {"render.modes": [
+        "human", "rgb_array"], "video.frames_per_second": 50}
 
     def __init__(self, wind_type="sine", max_wind=1.0):
         self.gravity = 9.8
@@ -51,8 +53,8 @@ class UnstableCartPoleContEnv(gym.Env):
         )
 
         self.action_space = spaces.Box(
-            low = self.min_action,
-            high = self.max_action,
+            low=self.min_action,
+            high=self.max_action,
             shape=(1,),
             dtype=np.float32
         )
@@ -67,6 +69,12 @@ class UnstableCartPoleContEnv(gym.Env):
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
+
+    def set_max_wind(self, max_wind):
+        self.max_w = max_wind
+
+    def set_wind_type(self, wind_type):
+        self.wind_type = wind_type
 
     def update_wind(self, t):
         if self.wind_type == "random":
@@ -97,10 +105,11 @@ class UnstableCartPoleContEnv(gym.Env):
             force + self.polemass_length * theta_dot ** 2 * sintheta
         ) / self.total_mass
         thetaacc = (self.gravity * sintheta - costheta * temp + wind_torque) / (
-            self.length * (4.0 / 3.0 - self.masspole * costheta ** 2 / self.total_mass)
+            self.length * (4.0 / 3.0 - self.masspole *
+                           costheta ** 2 / self.total_mass)
         )
         xacc = temp - self.polemass_length * thetaacc * costheta / self.total_mass
-       
+
         x = x + self.tau * x_dot
         x_dot = x_dot + self.tau * xacc
         theta = theta + self.tau * theta_dot
@@ -111,8 +120,8 @@ class UnstableCartPoleContEnv(gym.Env):
         done = bool(
             x < -self.x_threshold
             or x > self.x_threshold
-            #or theta < -self.theta_threshold_radians
-            #or theta > self.theta_threshold_radians
+            # or theta < -self.theta_threshold_radians
+            # or theta > self.theta_threshold_radians
         )
 
         if not done:
@@ -182,7 +191,8 @@ class UnstableCartPoleContEnv(gym.Env):
             self.axle.set_color(0.5, 0.5, 0.8)
             self.viewer.add_geom(self.axle)
             fname = path.join(path.dirname(__file__), "assets/wind.png")
-            self.wind_img = rendering.Image(fname, 100.0, 100.0) #width, height
+            self.wind_img = rendering.Image(
+                fname, 100.0, 100.0)  # width, height
             self.track = rendering.Line((0, carty), (screen_width, carty))
             self.track.set_color(0, 0, 0)
             self.viewer.add_geom(self.track)
@@ -212,7 +222,7 @@ class UnstableCartPoleContEnv(gym.Env):
         self.carttrans.set_translation(cartx, carty)
         self.poletrans.set_rotation(-x[2])
 
-        self.wind_imgtrans.scale = (self.last_w, np.abs(self.last_w) )
+        self.wind_imgtrans.scale = (self.last_w, np.abs(self.last_w))
         wind_x = 550 if self.last_w < 0 else 50
         self.wind_imgtrans.set_translation(wind_x, 200)
 
@@ -223,10 +233,16 @@ class UnstableCartPoleContEnv(gym.Env):
             self.viewer.close()
             self.viewer = None
 
+
 if __name__ == "__main__":
     env = UnstableCartPoleContEnv(wind_type="random", max_wind=1.0)
     #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
-    import time
+    '''
+    if you import unstable_gym to use it, then:
+        env = gym.make('UnstableCartpole-v0')
+        env.set_max_wind(1.0)
+        env.set_wind_type('random')
+    '''
 
     for ep in range(10):
         obs = env.reset()

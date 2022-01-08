@@ -38,6 +38,12 @@ class UnstablePendulumEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
+    def set_max_wind(self, max_wind):
+        self.max_w = max_wind
+
+    def set_wind_type(self, wind_type):
+        self.wind_type = wind_type
+
     def update_wind(self, t):
         if self.wind_type == "random":
             dw = self.np_random.uniform(low=-0.5, high=0.5)
@@ -102,19 +108,21 @@ class UnstablePendulumEnv(gym.Env):
             fname = path.join(path.dirname(__file__), "assets/clockwise.png")
             self.img = rendering.Image(fname, 1.0, 1.0)
             fname = path.join(path.dirname(__file__), "assets/wind.png")
-            self.wind_img = rendering.Image(fname, 1.0, 1.0) #width, height
+            self.wind_img = rendering.Image(fname, 1.0, 1.0)  # width, height
 
             self.imgtrans = rendering.Transform()
             self.wind_imgtrans = rendering.Transform()
-            self.img.add_attr(self.imgtrans) # just appending to self.attrs in Geom Class
-            self.wind_img.add_attr(self.wind_imgtrans) # just appending to self.attrs in Geom Class
+            # just appending to self.attrs in Geom Class
+            self.img.add_attr(self.imgtrans)
+            # just appending to self.attrs in Geom Class
+            self.wind_img.add_attr(self.wind_imgtrans)
 
         self.viewer.add_onetime(self.img)
         self.viewer.add_onetime(self.wind_img)
         self.pole_transform.set_rotation(self.state[0] + np.pi / 2)
         if self.last_u is not None:
             self.imgtrans.scale = (-self.last_u / 2, np.abs(self.last_u) / 2)
-            self.wind_imgtrans.scale = (-self.last_w , np.abs(self.last_w) )
+            self.wind_imgtrans.scale = (-self.last_w, np.abs(self.last_w))
             wind_x = 1.5 if self.last_w > 0 else -1.5
             self.wind_imgtrans.set_translation(wind_x, 0.0)
 
@@ -132,6 +140,12 @@ def angle_normalize(x):
 
 if __name__ == "__main__":
     env = UnstablePendulumEnv(wind_type="random", max_wind=1.0)
+    '''
+    if you import unstable_gym to use it, then:
+        env = gym.make('UnstablePendulum-v0')
+        env.set_max_wind(1.0)
+        env.set_wind_type('random')
+    '''
     #env = gym.wrappers.Monitor(env, '/tmp/unstable_gym/', force=True)
     import time
 
@@ -140,4 +154,3 @@ if __name__ == "__main__":
         action = env.action_space.sample()
         nobs, reward, done, info = env.step(action)
         env.render()
-            
