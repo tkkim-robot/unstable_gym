@@ -44,6 +44,9 @@ class UnstablePendulumEnv(gym.Env):
     def set_wind_type(self, wind_type):
         self.wind_type = wind_type
 
+    def set_dt(self, dt):
+        self.dt = dt
+
     def update_wind(self, t):
         if self.wind_type == "random":
             dw = self.np_random.uniform(low=-0.5, high=0.5)
