@@ -96,7 +96,6 @@ class UnstablePendulumEnv(gym.Env):
 
     def render(self, mode="human"):
         if self.viewer is None:
-            from gym.envs.classic_control import rendering
 
             self.viewer = rendering.Viewer(500, 500)
             self.viewer.set_bounds(-2.2, 2.2, -2.2, 2.2)
@@ -142,6 +141,7 @@ def angle_normalize(x):
 
 
 if __name__ == "__main__":
+    import rendering
     env = UnstablePendulumEnv(wind_type="random", max_wind=1.0)
     '''
     if you import unstable_gym to use it, then:
@@ -157,3 +157,6 @@ if __name__ == "__main__":
         action = env.action_space.sample()
         nobs, reward, done, info = env.step(action)
         env.render()
+
+else:
+    from . import rendering
