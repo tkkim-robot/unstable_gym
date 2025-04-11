@@ -1,6 +1,7 @@
 """
 2D rendering framework
-It is copied from OpenAI Gym (https://github.com/openai/gym)
+Copied and adapted from OpenAI Gym (https://github.com/openai/gym)
+Now updated for compatibility with gymnasium.
 """
 import os
 import sys
@@ -10,7 +11,8 @@ if "Apple" in sys.version:
         os.environ["DYLD_FALLBACK_LIBRARY_PATH"] += ":/usr/lib"
         # (JDS 2016/04/15): avoid bug on Anaconda 2.3.0 / Yosemite
 
-from gym import error
+# Update the import to use gymnasium's error module
+from gymnasium import error
 
 try:
     import pyglet
@@ -19,8 +21,8 @@ except ImportError as e:
         """
     Cannot import pyglet.
     HINT: you can install pyglet directly via 'pip install pyglet'.
-    But if you really just want to install all Gym dependencies and not have to think about it,
-    'pip install -e .[all]' or 'pip install gym[all]' will do it.
+    But if you really just want to install all Gymnasium dependencies and not have to think about it,
+    'pip install gymnasium[all]' will do it.
     """
     )
 
@@ -32,7 +34,7 @@ except ImportError as e:
     Error occurred while running `from pyglet.gl import *`
     HINT: make sure you have OpenGL installed. On Ubuntu, you can run 'apt-get install python-opengl'.
     If you're running on a server, you may need a virtual frame buffer; something like this should work:
-    'xvfb-run -s \"-screen 0 1400x900x24\" python <your_script.py>'
+    'xvfb-run -s "-screen 0 1400x900x24" python <your_script.py>'
     """
     )
 
@@ -50,8 +52,6 @@ def get_display(spec):
     """
     if spec is None:
         return pyglet.canvas.get_display()
-        # returns already available pyglet_display,
-        # if there is no pyglet display available then it creates one
     elif isinstance(spec, str):
         return pyglet.canvas.Display(spec)
     else:
@@ -62,7 +62,7 @@ def get_display(spec):
 
 def get_window(width, height, display, **kwargs):
     """
-    Will create a pyglet window from the display specification provided.
+    Will create a pyglet window from the provided display specification.
     """
     screen = display.get_screens()  # available screens
     config = screen[0].get_best_config()  # selecting the first screen
@@ -96,7 +96,7 @@ class Viewer:
 
     def close(self):
         if self.isopen and sys.meta_path:
-            # ^^^ check sys.meta_path to avoid 'ImportError: sys.meta_path is None, Python is likely shutting down'
+            # Avoid errors during interpreter shutdown.
             self.window.close()
             self.isopen = False
 
@@ -133,19 +133,13 @@ class Viewer:
             buffer = pyglet.image.get_buffer_manager().get_color_buffer()
             image_data = buffer.get_image_data()
             arr = np.frombuffer(image_data.get_data(), dtype=np.uint8)
-            # In https://github.com/openai/gym-http-api/issues/2, we
-            # discovered that someone using Xmonad on Arch was having
-            # a window of size 598 x 398, though a 600 x 400 window
-            # was requested. (Guess Xmonad was preserving a pixel for
-            # the boundary.) So we use the buffer height/width rather
-            # than the requested one.
             arr = arr.reshape(buffer.height, buffer.width, 4)
             arr = arr[::-1, :, 0:3]
         self.window.flip()
         self.onetime_geoms = []
         return arr if return_rgb_array else self.isopen
 
-    # Convenience
+    # Convenience drawing methods
     def draw_circle(self, radius=10, res=30, filled=True, **attrs):
         geom = make_circle(radius=radius, res=res, filled=filled)
         _add_attrs(geom, attrs)
@@ -229,9 +223,7 @@ class Transform(Attr):
 
     def enable(self):
         glPushMatrix()
-        glTranslatef(
-            self.translation[0], self.translation[1], 0
-        )  # translate to GL loc ppint
+        glTranslatef(self.translation[0], self.translation[1], 0)
         glRotatef(RAD2DEG * self.rotation, 0, 0, 1.0)
         glScalef(self.scale[0], self.scale[1], 1)
 
@@ -281,7 +273,7 @@ class Point(Geom):
         Geom.__init__(self)
 
     def render1(self):
-        glBegin(GL_POINTS)  # draw point
+        glBegin(GL_POINTS)
         glVertex3f(0.0, 0.0, 0.0)
         glEnd()
 
@@ -299,7 +291,7 @@ class FilledPolygon(Geom):
         else:
             glBegin(GL_TRIANGLES)
         for p in self.v:
-            glVertex3f(p[0], p[1], 0)  # draw each vertex
+            glVertex3f(p[0], p[1], 0)
         glEnd()
 
 
@@ -358,7 +350,7 @@ class PolyLine(Geom):
     def render1(self):
         glBegin(GL_LINE_LOOP if self.close else GL_LINE_STRIP)
         for p in self.v:
-            glVertex3f(p[0], p[1], 0)  # draw each vertex
+            glVertex3f(p[0], p[1], 0)
         glEnd()
 
     def set_linewidth(self, x):
@@ -444,12 +436,11 @@ class SimpleImageViewer:
         self.window.clear()
         self.window.switch_to()
         self.window.dispatch_events()
-        texture.blit(0, 0)  # draw
+        texture.blit(0, 0)
         self.window.flip()
 
     def close(self):
         if self.isopen and sys.meta_path:
-            # ^^^ check sys.meta_path to avoid 'ImportError: sys.meta_path is None, Python is likely shutting down'
             self.window.close()
             self.isopen = False
 
